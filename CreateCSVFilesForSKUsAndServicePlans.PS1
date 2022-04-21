@@ -5,7 +5,12 @@
 # See https://practical365.com/create-licensing-report-microsoft365-tenant/ for the article relating to this code
 # Uses cmdlets from the Microsoft Graph SDK for PowerShell
 # Connect to the Graph, specifing the tenant and profile to use - Add your tenant identifier here
-Connect-MgGraph -TenantId xxxxxxx-14fc-43a2-9a7a-d2e27f4f3478
+
+Import-Module Microsoft.Graph.Authentication
+Import-Module Microsoft.Graph.Users
+Import-Module Microsoft.Graph.Reports
+
+Connect-MgGraph -TenantId $env:CJM_TenantID
 Select-MgProfile beta
 # Get prpducts used in tenant
 [Array]$Skus = Get-MgSubscribedSku
@@ -23,7 +28,7 @@ ForEach ($S in $Skus) {
      $SPData.Add($SPLine)
  }
 }
-$SPData | Sort ServicePlanId -Unique | Export-csv c:\Temp\ServicePlanData.csv -NoTypeInformation
+$SPData | Sort ServicePlanId -Unique | Export-csv c:\temp\ServicePlanData.csv -NoTypeInformation
 # After they are generated, you need to edit the CSV files to add the human-friendly values to use for products (SKUs) and service plans
 #
 # This is what the SKU information should looks like:

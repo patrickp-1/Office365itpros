@@ -2,8 +2,12 @@
 # https://github.com/12Knocksinna/Office365itpros/blob/master/ReportLastAccountSignIn-Mg.PS1
 # Demonstration of how to fetch user account sign in data using the Microsoft Graph SDK for PowerShell
 #
-# Connect to the Graph, specifing the tenant and profile to use - Add your tenant identifier here
-Connect-MgGraph -TenantId xxxxx-axxad-acadd-ddaadda -Scope Auditlog.Read.All
+# Connect to the Graph, specifing the tenant and profile to use - Add your tenant identifier 
+Import-Module Microsoft.Graph.Authentication
+Import-Module Microsoft.Graph.Users
+Import-Module Microsoft.Graph.Reports
+
+Connect-MgGraph -TenantId $env:CJM_TenantID -Scope 'Auditlog.Read.All','User.Read.All'
 Select-MgProfile beta # Beta needed to get more informtion from the Graph
 $Details = Get-MgContext
 $Scopes = $Details | Select -ExpandProperty Scopes

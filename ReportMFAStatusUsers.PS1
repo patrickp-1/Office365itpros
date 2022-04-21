@@ -3,14 +3,13 @@
 # A script to report the authentication methods used by Azure AD user accounts
  
 # Check that we have loaded the Azure AD module
-$ModulesLoaded = Get-Module | Select Name
-If (!($ModulesLoaded -match "AzureAD")) {Write-Host "Please connect to the Azure Ad module and then restart the script"; break}
-$TenantInfo = (Get-AzureADTenantDetail)
-$TenantId = $TenantInfo.ObjectId
-$TenantName = $TenantInfo.DisplayName
+Import-Module Microsoft.Graph.Authentication
+Import-Module Microsoft.Graph.Users
+Import-Module Microsoft.Graph.Reports
+Import-Module Microsoft.Graph.Identity.SignIns
 
 # Now connect to the Microsoft Graph SDK for PowerShell
-Connect-MgGraph -TenantId $TenantId -Scope "UserAuthenticationMethod.Read.All, Directory.Read.All, User.Read.All, Auditlog.Read.All"
+Connect-MgGraph -TenantId $env:CJM_TenantID -Scope "UserAuthenticationMethod.Read.All, Directory.Read.All, User.Read.All, Auditlog.Read.All"
 Select-MgProfile Beta
 $Details = Get-MgContext
 $Scopes = $Details | Select -ExpandProperty Scopes
@@ -107,7 +106,7 @@ ForEach ($AuthUser in $AuthUsers) {
 } 
    
 $OutputFile | Out-GridView
-$OutputFile | Export-CSV -NoTypeInformation c:\Temp\MFAStatus.CSV
+$OutputFile | Export-CSV -NoTypeInformation c:\temp\MFAStatus.CSV
 
 # An example script used to illustrate a concept. More information about the topic can be found in the Office 365 for IT Pros eBook https://gum.co/O365IT/
 # and/or a relevant article on https://office365itpros.com or https://www.practical365.com. See our post about the Office 365 for IT Pros repository 
